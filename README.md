@@ -1,8 +1,5 @@
-# Azure Vault Property Provider for Properties Override for Mule 4
+# Azure Vault Property Provider -- With Encrypted Client ID/Secret and Encoded EncryptKey
 
-This module will be used to override properties during deployment. This will work in tandem with
-- properties placeholder
-- secure properties placeholder
 
 ## Deploying to Exchange
 Clone the project to your local, change the groupId to point your orgId. Issue `mvn deploy`.
@@ -17,7 +14,7 @@ Add this dependency to your application pom.xml
 ```
 <dependency>
 	<groupId>${groupId}</groupId>
-	<artifactId>mule-azure-vault-properties-providers-module</artifactId>
+	<artifactId>azure-vault-custom-properties-provider-encrypted</artifactId>
 	<version>${version}</version>
 	<classifier>mule-plugin</classifier>
 </dependency>
@@ -28,35 +25,37 @@ Add this dependency to your application pom.xml
 
 ### Azure Application ClientId and Azure Application Secret Key
 These should be provided as part of the wrapper.conf or during deployment.
-These can be provided through secure properties also.
+Please note that these cannot be provided via Secure Properties Module as Azure Custom Properties module loads before Secure Properties module during Mule Startup.
+
+Client ID, Secret from Azure need to be provided in an encrypted fashion (AES, CBC with Random IV) and the encryption should be done via Secure Properties tools jar (https://docs.mulesoft.com/mule-runtime/4.3/secure-configuration-properties#secure_props_tool)
+*** If you need to use any other method for Encryption/decryption , you can update the decryption class "CustomCodeSecretProperties.java" 
+
+### Additionally, you need to make the Secure Properties tools jar made available via Maven POM dependency. For Simplicity, I have placed the Jar as a custom asset within the Exchange and included it as dependency to perform the decryption. 
+
 
 ### Azure Vault Name
 The vault name should be provided against which Mule will fetch keys from
 Azure Vault Key Store.
 
-
+### Encrypt Key 
+should be base64 encoded key
 
 ### Example Config
 A sample config.
 ```
-	<azure-vault-property-provider:config
-	    name="Azure_Vault_Property_Provider_Config"
-	    doc:name="Azure Vault Property Provider Config"
-	    doc:id="41572f12-9652-437e-82c7-4e7d642fca49" >
-		<azure-vault-property-provider:azure-vault
-		    applicationClientId="${azure.app.clientId}"
-		    applicationSecretKey="${azure.app.clientSecret}"
-		    azureVaultName="${azure.vaultName}" />
+		<azure-vault-property-provider:config name="Azure_Vault_Property_Provider_Config" doc:name="Azure Vault Property Provider Config" doc:id="3bb1983e-2453-4f0d-930a-5c234382fb68" >
+		<azure-vault-property-provider:azure-vault applicationClientId="${example-azure-client-id}" applicationSecretKey="${example-azure-client-secret}" azureVaultName="${keyvaultmule}" encryptKey="${encryptKey}"/>
 	</azure-vault-property-provider:config>
 ```
 
-![alt text](sampleConfig.png)
+![alt text](encrypted_AzureVaultConnector.png)
 
 ## Usage
 
 ### Prefix
 - For all purposes, this module relies on **azure-vault** as the prefix.
 - Any property provided as **${azure-vault::}** will be referenced from Azure Vault Key Store.
+You can change it at AzureVaultConfigurationPropertiesProvider
 
 ### Azure value can store 'n' number of  properties
 - There can be `n` number of secrets in Azure Vault key store. The best way to access a particular key
@@ -73,4 +72,4 @@ A sample config.
 ```
 
 ## Contributors
- Srinivasan Raghunathan
+ Gaurav Talwadker / Original Azure Key Vault Properties Provider -- Srinivasan Raghunathan
