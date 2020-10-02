@@ -71,5 +71,9 @@ You can change it at AzureVaultConfigurationPropertiesProvider
 
 ```
 
+### TEST PROJECT
+
+https://github.com/mulesoft-catalyst/azure-vault-encrypted-test-example
+
 ## Contributors
  Gaurav Talwadker / Original Azure Key Vault Properties Provider -- Srinivasan Raghunathan
