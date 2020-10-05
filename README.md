@@ -27,8 +27,7 @@ Add this dependency to your application pom.xml
 These should be provided as part of the wrapper.conf or during deployment.
 Please note that these cannot be provided via Secure Properties Module as Azure Custom Properties module loads before Secure Properties module during Mule Startup.
 
-Client ID, Secret from Azure need to be provided in an encrypted fashion (AES, CBC with Random IV) and the encryption should be done via Secure Properties tools jar (https://docs.mulesoft.com/mule-runtime/4.3/secure-configuration-properties#secure_props_tool)
-*** If you need to use any other method for Encryption/decryption , you can update the decryption class "CustomCodeSecretProperties.java" 
+Client ID, Secret from Azure need to be provided in an encrypted fashion (AES, CBC with Random IV with 256 bit encrypted key) and the encryption should be done via Secure Properties tools jar (https://docs.mulesoft.com/mule-runtime/4.3/secure-configuration-properties#secure_props_tool) *** If you need to use any other method for Encryption/decryption , you can update the decryption class "CustomCodeSecretProperties.java"
 
 ### Additionally, you need to make the Secure Properties tools jar made available via Maven POM dependency. For Simplicity, I have placed the Jar as a custom asset within the Exchange and included it as dependency to perform the decryption. 
 
