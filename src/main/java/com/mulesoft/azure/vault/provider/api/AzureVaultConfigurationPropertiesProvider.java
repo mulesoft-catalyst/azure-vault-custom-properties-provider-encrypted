@@ -108,7 +108,7 @@ public class AzureVaultConfigurationPropertiesProvider implements ConfigurationP
 
         }  catch (Exception e) {
 
-            System.out.println("Error Occured " + e.getMessage());
+            LOGGER.error("Error Occured " + e.getMessage());
 
         }
         return secretValue;

@@ -129,6 +129,7 @@ public class AzureVaultConfigurationPropertiesProviderFactory implements Configu
       
     } catch (Exception e) {
       LOGGER.error("azure application client id is not present");
+      LOGGER.error("Error Occured azure application client id is not present");
       throw new RuntimeException("azure application client id parameter not present");
     }
     try {
@@ -145,6 +146,7 @@ public class AzureVaultConfigurationPropertiesProviderFactory implements Configu
       
     } catch (Exception e) {
       LOGGER.error("application secret key parameter not present");
+      LOGGER.error("Error Occured application secret key parameter not present" + e.getMessage());
       throw new RuntimeException("application secret key parameter not present");
     }
     try {
