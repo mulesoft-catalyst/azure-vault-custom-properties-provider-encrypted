@@ -1,7 +1,5 @@
 # Azure Vault Property Provider -- With Encrypted Client ID/Secret and Encoded EncryptKey
 
-
-
 ## Deploying to Exchange
 Clone the project to your local, change the groupId to point your orgId. Issue `mvn deploy`.
 Ensure that there is an entry in your settings.xml pertaining to Exchange2
@@ -39,8 +37,12 @@ In this version we have removed the mule-secure-property-tool as dependency and 
 The vault name should be provided against which Mule will fetch keys from
 Azure Vault Key Store.
 
-### Encrypt Key 
+### Encrypt Key
 should be base64 encoded key
+## localProperyProvider
+True or False to indicate if you want to byAzure Vault and load from the file with in the project. _localfile_ is Mandatory if the flag is encrypted_AzureVaultConnector
+##localfile
+Local File as property provider instead of Azure
 
 ### Example Config
 A sample config.
