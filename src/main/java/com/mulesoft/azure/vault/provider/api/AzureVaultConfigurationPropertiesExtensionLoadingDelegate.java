@@ -6,10 +6,6 @@
  */
 package com.mulesoft.azure.vault.provider.api;
 
-import static org.mule.metadata.api.model.MetadataFormat.JAVA;
-import static org.mule.runtime.api.meta.Category.SELECT;
-import static org.mule.runtime.api.meta.ExpressionSupport.NOT_SUPPORTED;
-
 import org.mule.metadata.api.ClassTypeLoader;
 import org.mule.metadata.api.builder.BaseTypeBuilder;
 import org.mule.runtime.api.meta.ExpressionSupport;
@@ -17,9 +13,14 @@ import org.mule.runtime.api.meta.model.declaration.fluent.ConfigurationDeclarer;
 import org.mule.runtime.api.meta.model.declaration.fluent.ExtensionDeclarer;
 import org.mule.runtime.api.meta.model.declaration.fluent.ParameterGroupDeclarer;
 import org.mule.runtime.api.meta.model.display.DisplayModel;
+import org.mule.runtime.api.meta.model.display.PathModel;
 import org.mule.runtime.extension.api.declaration.type.ExtensionsTypeLoaderFactory;
 import org.mule.runtime.extension.api.loader.ExtensionLoadingContext;
 import org.mule.runtime.extension.api.loader.ExtensionLoadingDelegate;
+
+import static org.mule.metadata.api.model.MetadataFormat.JAVA;
+import static org.mule.runtime.api.meta.Category.SELECT;
+import static org.mule.runtime.api.meta.ExpressionSupport.NOT_SUPPORTED;
 
 /**
  * Declares extension for Secure Properties Configuration module
@@ -80,14 +81,30 @@ public class AzureVaultConfigurationPropertiesExtensionLoadingDelegate implement
                 .ofType(BaseTypeBuilder.create(JAVA).stringType().build())
                 .withExpressionSupport(ExpressionSupport.SUPPORTED)
                 .describedAs("Azure Vault Name");
-        
-        
+
+
         addAzureVaultParametersGroup
-        .withRequiredParameter("encryptKey")
-        .withDisplayModel(DisplayModel.builder().displayName("Encoded Encrypt Key").build())
-        .ofType(BaseTypeBuilder.create(JAVA).stringType().build())
-        .withExpressionSupport(ExpressionSupport.SUPPORTED)
-        .describedAs("Encoded Encrypt Key");
+                .withRequiredParameter("encryptKey")
+                .withDisplayModel(DisplayModel.builder().displayName("Encoded Encrypt Key").build())
+                .ofType(BaseTypeBuilder.create(JAVA).stringType().build())
+                .withExpressionSupport(ExpressionSupport.SUPPORTED)
+                .describedAs("Encoded Encrypt Key");
+
+        addAzureVaultParametersGroup
+                .withOptionalParameter("localfile").ofType(BaseTypeBuilder.create(JAVA).stringType().build())
+                .withExpressionSupport(NOT_SUPPORTED)
+                .withDisplayModel(DisplayModel.builder().path(new PathModel(PathModel.Type.FILE, false, PathModel.Location.EMBEDDED, new String[]{"yaml", "properties"}))
+                        .build())
+                .describedAs("Local property file which will be used for bypassing connection to Azure");
+
+
+        addAzureVaultParametersGroup
+                .withOptionalParameter("localPropertyProvider").ofType(BaseTypeBuilder.create(JAVA).stringType().build())
+                .withExpressionSupport(ExpressionSupport.SUPPORTED)
+                .withDisplayModel(DisplayModel.builder().displayName("ByPass Azure Connection").build())
+                .ofType(BaseTypeBuilder.create(JAVA).booleanType().build())
+                .defaultingTo(Boolean.FALSE)
+                .describedAs("Flag to bypass Azure connection");
 
 
     }
