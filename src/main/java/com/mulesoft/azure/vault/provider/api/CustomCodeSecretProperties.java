@@ -27,26 +27,5 @@
 
 
 
-/**
-public static void main(String[] args) {
-	
-	try {
-		String secretKey = "S01sOTFhSnRLVzRVenpmdTRCZFRZemlEVkZMS0gzRmk=";
-		String encodedSecret = "+WIMWuIrD9cZYwBryTOuZbJI1zV4/93cLDilXLe/bnyHHzzLYxIuXy/By47U7B0pUgfoaVADq2vIcQqyod8KHQ==";
-		// Decoding SecretKey from Base64
-		byte[] secretkey_decodedBytes = Base64.decode(secretKey);
-		secretKey = new String(secretkey_decodedBytes, StandardCharsets.UTF_8);
-		System.out.println(secretKey);
 
-	//	String encryptedValue=CustomCodeSecretProperties.encrypt("27989859-b52f-4069-92af-51b51f5e830b", secretKey);
-	//	System.out.println(encryptedValue);
-		String decryptedValue = CustomCodeSecretProperties.decrypt(encodedSecret, secretKey);
-
-		System.out.println("Decrypted Value is " + decryptedValue);
-	}catch (Exception e){
-		e.printStackTrace();
-	}
-	
- }
- **/
 }
