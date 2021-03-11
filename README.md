@@ -39,16 +39,19 @@ Azure Vault Key Store.
 
 ### Encrypt Key
 should be base64 encoded key
-## localProperyProvider
+## localPropertyProvider
 True or False to indicate if you want to byAzure Vault and load from the file with in the project. _localfile_ is Mandatory if the flag is encrypted_AzureVaultConnector
+FYI -- Known Issue : From the UI screen in the configurations when selected as an Expression and reference is provided, it updates within the backend XML but doesnt show on the screen.
 ##localfile
-Local File as property provider instead of Azure
+Local File as property provider instead of Azure. Note that this Local file has to be provided as an Munit runtime argument within the Maven Command.
+
+FYI -- Please note that Azure Key Vault doesnt allow special characters or dots within the name of the Keys. 
 
 ### Example Config
 A sample config.
 ```
 		<azure-vault-property-provider:config name="Azure_Vault_Property_Provider_Config" doc:name="Azure Vault Property Provider Config" doc:id="6e2bf9fb-25a4-4fca-8316-20656bc7a50d" >
-    		<azure-vault-property-provider:azure-vault applicationClientId="${azure.clientId}" applicationSecretKey="${azure.secret}" azureVaultName="${azure.vaultName}" encryptKey="${azure.encryptionKey}" localProperyProvider=${byPassAzureBooleanFlag} localfile=${localPropertyFile}/>
+    		<azure-vault-property-provider:azure-vault applicationClientId="${azure.clientId}" applicationSecretKey="${azure.secret}" azureVaultName="${azure.vaultName}" encryptKey="${azure.encryptionKey}" localPropertyProvider=${byPassAzureBooleanFlag} localfile=${localPropertyFile}/>
     	</azure-vault-property-provider:config>
 ```
 

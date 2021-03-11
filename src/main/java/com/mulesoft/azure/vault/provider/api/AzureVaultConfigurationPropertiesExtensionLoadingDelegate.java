@@ -95,7 +95,7 @@ public class AzureVaultConfigurationPropertiesExtensionLoadingDelegate implement
                 .withExpressionSupport(NOT_SUPPORTED)
                 .withDisplayModel(DisplayModel.builder().path(new PathModel(PathModel.Type.FILE, false, PathModel.Location.EMBEDDED, new String[]{"yaml", "properties"}))
                         .build())
-                .describedAs("Local property file which will be used for bypassing connection to Azure");
+                .describedAs("Local property file which will be used for bypassing connection to Azure(Mandatory when ByPass flag is True)");
 
 
         addAzureVaultParametersGroup
