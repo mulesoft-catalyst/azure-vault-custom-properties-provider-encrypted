@@ -9,6 +9,7 @@ For local install, give any groupId. Issue `mvn clean install -DskipTests`
 
 ## Using the module in a Mule4 Project
 Add this dependency to your application pom.xml
+By default the group ID is given as com.mule.azurekv
 
 ```
 <dependency>
