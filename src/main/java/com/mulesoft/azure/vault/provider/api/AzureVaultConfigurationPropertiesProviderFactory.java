@@ -6,9 +6,6 @@
  */
 package com.mulesoft.azure.vault.provider.api;
 
-import static com.mulesoft.azure.vault.provider.api.AzureVaultConfigurationPropertiesExtensionLoadingDelegate.*;
-import static org.mule.runtime.api.component.ComponentIdentifier.builder;
-
 import com.microsoft.aad.adal4j.AuthenticationException;
 import com.microsoft.azure.keyvault.KeyVaultClient;
 import com.microsoft.azure.keyvault.authentication.KeyVaultCredentials;
@@ -17,15 +14,14 @@ import org.mule.runtime.config.api.dsl.model.ConfigurationParameters;
 import org.mule.runtime.config.api.dsl.model.ResourceProvider;
 import org.mule.runtime.config.api.dsl.model.properties.ConfigurationPropertiesProvider;
 import org.mule.runtime.config.api.dsl.model.properties.ConfigurationPropertiesProviderFactory;
-import org.mule.runtime.config.api.dsl.model.properties.ConfigurationProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mulesoft.azure.vault.provider.api.AESEncrDecrypt128BitTEST;
-
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
+
+import static com.mulesoft.azure.vault.provider.api.AzureVaultConfigurationPropertiesExtensionLoadingDelegate.*;
+import static org.mule.runtime.api.component.ComponentIdentifier.builder;
 
 /**
  * Builds the provider for a custom-properties-provider:config element.
@@ -56,6 +52,8 @@ public class AzureVaultConfigurationPropertiesProviderFactory implements Configu
                                                         ResourceProvider externalResourceProvider) {
 
     String vaultName;
+    String fileLocation;
+    boolean localFileProvider;
 
     List<ConfigurationParameters> azureVaultList = parameters
             .getComplexConfigurationParameter(builder()
@@ -69,10 +67,28 @@ public class AzureVaultConfigurationPropertiesProviderFactory implements Configu
       throw new RuntimeException("vaultName parameter not present");
     }
     try {
-      return new AzureVaultConfigurationPropertiesProvider(getAzureKeyVaultClient(parameters), vaultName);
-    } catch (Exception ve) {
-      LOGGER.error("Error connecting to Azure Vault Key Service", ve);
-      return null;
+      localFileProvider = Boolean.valueOf(parameters1.getStringParameter("localPropertyProvider")).booleanValue();
+
+    } catch (Exception e) {
+      LOGGER.error("vaultName parameter not present");
+      throw new RuntimeException("vaultName parameter not present");
+    }
+    if (localFileProvider) {
+      try {
+        fileLocation = parameters1.getStringParameter("localfile");
+        return new AzureVaultConfigurationPropertiesProvider(new FileConfigurationProvider().yaml2map(fileLocation),localFileProvider);
+      } catch (Exception e) {
+        LOGGER.error("Local File parameter is not provider but localPropertyProvider is settoTrue");
+        throw new RuntimeException("vLocal property file not present");
+      }
+    }else {
+
+      try {
+        return new AzureVaultConfigurationPropertiesProvider(getAzureKeyVaultClient(parameters), vaultName, localFileProvider);
+      } catch (Exception ve) {
+        LOGGER.error("Error connecting to Azure Vault Key Service", ve);
+        return null;
+      }
     }
 
 
@@ -99,18 +115,21 @@ public class AzureVaultConfigurationPropertiesProviderFactory implements Configu
     	
     	byte[] secretkey_decodedBytes = java.util.Base64.getDecoder().decode(parameters1.getStringParameter("encryptKey"));
     	decodedKey = new String(secretkey_decodedBytes, StandardCharsets.UTF_8);
+        LOGGER.debug ("decoded key " + decodedKey);
     	
     	//System.out.println("Original CLIENTNID >>>> "+parameters1.getStringParameter("applicationClientId"));
     	
     	
     	
       applicationClientId= CustomCodeSecretProperties.decrypt(parameters1.getStringParameter("applicationClientId"), decodedKey);
+      LOGGER.debug ("Azure Client ID " + applicationClientId);
       								
       //System.out.println("CLIENT ID >>>>>> "+applicationClientId);
       
       
     } catch (Exception e) {
       LOGGER.error("azure application client id is not present");
+      LOGGER.error("Error Occured azure application client id is not present");
       throw new RuntimeException("azure application client id parameter not present");
     }
     try {
@@ -121,12 +140,13 @@ public class AzureVaultConfigurationPropertiesProviderFactory implements Configu
     	//System.out.println("Original CLIENT SECRET >>>> "+parameters1.getStringParameter("applicationSecretKey"));
 
       applicationSecretKey= CustomCodeSecretProperties.decrypt(parameters1.getStringParameter("applicationSecretKey"), decodedKey);
-
+      LOGGER.debug ("Azure Secret  Key " + applicationSecretKey);
       
-      System.out.println("CLIENT SECRET >>>>>> "+applicationSecretKey);
+
       
     } catch (Exception e) {
       LOGGER.error("application secret key parameter not present");
+      LOGGER.error("Error Occured application secret key parameter not present" + e.getMessage());
       throw new RuntimeException("application secret key parameter not present");
     }
     try {

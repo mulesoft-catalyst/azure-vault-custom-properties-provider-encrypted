@@ -1,7 +1,6 @@
 package com.mulesoft.azure.vault.provider.api;
 
 import javax.crypto.Cipher;
-import javax.crypto.Mac;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.MessageDigest;
